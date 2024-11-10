@@ -481,11 +481,12 @@ components:
         email:
           type: string
           description: Email of the user
-        profiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/Profile'
-          description: List of profiles associated with the user
+        contrasena:
+          type: string
+          description: Password of the user
+        rol:
+          type: integer
+          description: Role of the user (1 = Normal user, 2 = Admin)
 
     Profile:
       type: object
