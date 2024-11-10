@@ -1,264 +1,113 @@
 package io.swagger.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.validation.annotation.Validated;
-import org.openapitools.jackson.nullable.JsonNullable;
-import io.swagger.configuration.NotUndefined;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Profile
- */
-@Validated
-@NotUndefined
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-10-31T11:39:55.913399844Z[GMT]")
+import javax.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
+@Entity
+@Table(name = "profiles")
+public class Profile {
 
-public class Profile   {
-  @JsonProperty("id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)  // Solo visible en la respuesta, no en la solicitud
+  @Column(name = "id")
+  private Integer id;
 
-  @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
-  private Integer id = null;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-  @JsonProperty("name")
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)  // Solo visible en la respuesta, no en la solicitud
+  @Column(name = "user_id", nullable = false)
+  private Integer userId;
 
-  @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
-  private String name = null;
+  @ElementCollection
+  @CollectionTable(name = "profile_favorites", joinColumns = @JoinColumn(name = "profile_id"))
+  @Column(name = "favorite_content_id")
+  private List<Integer> favorites = new ArrayList<>();
 
-  @JsonProperty("userId")
+  @ElementCollection
+  @CollectionTable(name = "profile_watch_later", joinColumns = @JoinColumn(name = "profile_id"))
+  @Column(name = "watch_later_content_id")
+  private List<Integer> watchLater = new ArrayList<>();
 
-  @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
-  private Integer userId = null;
+  @ElementCollection
+  @CollectionTable(name = "profile_recently_watched", joinColumns = @JoinColumn(name = "profile_id"))
+  @Column(name = "recently_watched_content_id")
+  private List<Integer> recentlyWatched = new ArrayList<>();
 
-  @JsonProperty("favorites")
-  @Valid
-  private List<Integer> favorites = null;
-  @JsonProperty("watchLater")
-  @Valid
-  private List<Integer> watchLater = null;
-  @JsonProperty("recentlyWatched")
-  @Valid
-  private List<Integer> recentlyWatched = null;
-
-  public Profile id(Integer id) { 
-
-    this.id = id;
-    return this;
-  }
-
-  /**
-   * Unique identifier for the profile
-   * @return id
-   **/
-  
-  @Schema(description = "Unique identifier for the profile")
-  
-  public Integer getId() {  
+  // Getters y Setters
+  public Integer getId() {
     return id;
   }
 
-
-
-  public void setId(Integer id) { 
+  public void setId(Integer id) {
     this.id = id;
   }
 
-  public Profile name(String name) { 
-
-    this.name = name;
-    return this;
-  }
-
-  /**
-   * Name of the profile
-   * @return name
-   **/
-  
-  @Schema(description = "Name of the profile")
-  
-  public String getName() {  
+  public String getName() {
     return name;
   }
 
-
-
-  public void setName(String name) { 
+  public void setName(String name) {
     this.name = name;
   }
 
-  public Profile userId(Integer userId) { 
-
-    this.userId = userId;
-    return this;
-  }
-
-  /**
-   * ID of the associated user
-   * @return userId
-   **/
-  
-  @Schema(description = "ID of the associated user")
-  
-  public Integer getUserId() {  
+  public Integer getUserId() {
     return userId;
   }
 
-
-
-  public void setUserId(Integer userId) { 
+  public void setUserId(Integer userId) {
     this.userId = userId;
   }
 
-  public Profile favorites(List<Integer> favorites) { 
-
-    this.favorites = favorites;
-    return this;
-  }
-
-  public Profile addFavoritesItem(Integer favoritesItem) {
-    if (this.favorites == null) {
-      this.favorites = new ArrayList<Integer>();
-    }
-    this.favorites.add(favoritesItem);
-    return this;
-  }
-
-  /**
-   * List of favorite content IDs
-   * @return favorites
-   **/
-  
-  @Schema(description = "List of favorite content IDs")
-  
-  public List<Integer> getFavorites() {  
+  public List<Integer> getFavorites() {
     return favorites;
   }
 
-
-
-  public void setFavorites(List<Integer> favorites) { 
+  public void setFavorites(List<Integer> favorites) {
     this.favorites = favorites;
   }
 
-  public Profile watchLater(List<Integer> watchLater) { 
-
-    this.watchLater = watchLater;
-    return this;
-  }
-
-  public Profile addWatchLaterItem(Integer watchLaterItem) {
-    if (this.watchLater == null) {
-      this.watchLater = new ArrayList<Integer>();
-    }
-    this.watchLater.add(watchLaterItem);
-    return this;
-  }
-
-  /**
-   * List of watch later content IDs
-   * @return watchLater
-   **/
-  
-  @Schema(description = "List of watch later content IDs")
-  
-  public List<Integer> getWatchLater() {  
+  public List<Integer> getWatchLater() {
     return watchLater;
   }
 
-
-
-  public void setWatchLater(List<Integer> watchLater) { 
+  public void setWatchLater(List<Integer> watchLater) {
     this.watchLater = watchLater;
   }
 
-  public Profile recentlyWatched(List<Integer> recentlyWatched) { 
-
-    this.recentlyWatched = recentlyWatched;
-    return this;
-  }
-
-  public Profile addRecentlyWatchedItem(Integer recentlyWatchedItem) {
-    if (this.recentlyWatched == null) {
-      this.recentlyWatched = new ArrayList<Integer>();
-    }
-    this.recentlyWatched.add(recentlyWatchedItem);
-    return this;
-  }
-
-  /**
-   * List of recently watched content IDs
-   * @return recentlyWatched
-   **/
-  
-  @Schema(description = "List of recently watched content IDs")
-  
-  public List<Integer> getRecentlyWatched() {  
+  public List<Integer> getRecentlyWatched() {
     return recentlyWatched;
   }
 
-
-
-  public void setRecentlyWatched(List<Integer> recentlyWatched) { 
+  public void setRecentlyWatched(List<Integer> recentlyWatched) {
     this.recentlyWatched = recentlyWatched;
   }
 
   @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Profile)) return false;
     Profile profile = (Profile) o;
-    return Objects.equals(this.id, profile.id) &&
-        Objects.equals(this.name, profile.name) &&
-        Objects.equals(this.userId, profile.userId) &&
-        Objects.equals(this.favorites, profile.favorites) &&
-        Objects.equals(this.watchLater, profile.watchLater) &&
-        Objects.equals(this.recentlyWatched, profile.recentlyWatched);
+    return id != null && id.equals(profile.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, userId, favorites, watchLater, recentlyWatched);
+    return getClass().hashCode();
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class Profile {\n");
-    
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    favorites: ").append(toIndentedString(favorites)).append("\n");
-    sb.append("    watchLater: ").append(toIndentedString(watchLater)).append("\n");
-    sb.append("    recentlyWatched: ").append(toIndentedString(recentlyWatched)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return "Profile{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", userId=" + userId +
+            '}';
   }
 }
