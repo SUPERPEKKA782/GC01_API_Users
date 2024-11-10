@@ -31,6 +31,20 @@ public class ListController {
         }
     }
 
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> addFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            profile.getFavorites().add(contentId);
+            profileService.updateProfile(profileId, profile);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @DeleteMapping("/favorites/{contentId}")
     public ResponseEntity<Void> removeFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @PathVariable Integer contentId) throws NotFoundException {
         Optional<Profile> profileOptional = profileService.getProfileById(profileId);
@@ -61,6 +75,20 @@ public class ListController {
         }
     }
 
+    @PostMapping("/watch-later")
+    public ResponseEntity<Void> addWatchLater(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            profile.getWatchLater().add(contentId);
+            profileService.updateProfile(profileId, profile);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @DeleteMapping("/watch-later/{contentId}")
     public ResponseEntity<Void> removeWatchLater(@PathVariable Integer userId, @PathVariable Integer profileId, @PathVariable Integer contentId) throws NotFoundException {
         Optional<Profile> profileOptional = profileService.getProfileById(profileId);
@@ -77,4 +105,5 @@ public class ListController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Profile not found
         }
     }
+
 }
