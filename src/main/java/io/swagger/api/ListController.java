@@ -20,6 +20,17 @@ public class ListController {
 
 
     // Watch Later List Endpoints
+    @GetMapping("/watch-later")
+    public ResponseEntity<List<Integer>> getWatchLater(@PathVariable Integer userId, @PathVariable Integer profileId) {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            return ResponseEntity.ok(profile.getWatchLater());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
     @PostMapping("/watch-later")
     public ResponseEntity<Void> addWatchLater(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
