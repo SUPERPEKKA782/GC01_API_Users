@@ -22,6 +22,12 @@ public class User {
   @Column(name = "email", nullable = false)
   private String email;
 
+  @Column(name = "contrasena", nullable = false)
+  private String contrasena;
+
+  @Column(name = "rol", nullable = false)
+  private Integer rol;
+
   // Getters y Setters
   public Integer getId() {
     return id;
@@ -47,6 +53,22 @@ public class User {
     this.email = email;
   }
 
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public Integer getRol() {
+        return rol;
+    }
+
+    public void setRol(Integer rol) {
+        this.rol = rol;
+    }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -66,6 +88,8 @@ public class User {
             "id=" + id +
             ", username='" + username + '\'' +
             ", email='" + email + '\'' +
+            ", contrasena='" + contrasena + '\'' +
+            ", rol='" + rol + '\'' +
             '}';
   }
 }

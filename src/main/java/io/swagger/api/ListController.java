@@ -280,4 +280,5 @@ public class ListController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Profile not found
         }
     }
+
 }
