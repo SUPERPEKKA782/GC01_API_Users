@@ -18,6 +18,20 @@ public class ListController {
         this.profileService = profileService;
     }
 
+    // Favorites List Endpoints
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> addFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            profile.getFavorites().add(contentId);
+            profileService.updateProfile(profileId, profile);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     // Watch Later List Endpoints
     @GetMapping("/watch-later")
