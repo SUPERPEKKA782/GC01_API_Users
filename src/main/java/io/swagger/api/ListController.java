@@ -19,6 +19,18 @@ public class ListController {
     }
 
     // Favorites List Endpoints
+    @GetMapping("/favorites")
+    public ResponseEntity<List<Integer>> getFavorites(@PathVariable Integer userId, @PathVariable Integer profileId) {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            return ResponseEntity.ok(profile.getFavorites());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @PostMapping("/favorites")
     public ResponseEntity<Void> addFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
         Optional<Profile> profileOptional = profileService.getProfileById(profileId);
@@ -30,6 +42,23 @@ public class ListController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/favorites/{contentId}")
+    public ResponseEntity<Void> removeFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @PathVariable Integer contentId) throws NotFoundException {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            if (profile.getFavorites().remove(contentId)) {
+                profileService.updateProfile(profileId, profile);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Content ID not found in favorites
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Profile not found
         }
     }
 
@@ -59,4 +88,22 @@ public class ListController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @DeleteMapping("/watch-later/{contentId}")
+    public ResponseEntity<Void> removeWatchLater(@PathVariable Integer userId, @PathVariable Integer profileId, @PathVariable Integer contentId) throws NotFoundException {
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            if (profile.getWatchLater().remove(contentId)) {
+                profileService.updateProfile(profileId, profile);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Content ID not found in watch later list
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Profile not found
+        }
+    }
+
 }
