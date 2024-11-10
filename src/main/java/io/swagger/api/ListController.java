@@ -22,7 +22,16 @@ public class ListController {
 
     @PostMapping("/favorites")
     public ResponseEntity<Void> addFavorite(@PathVariable Integer userId, @PathVariable Integer profileId, @RequestBody Integer contentId) throws NotFoundException {
-        return null;
+        Optional<Profile> profileOptional = profileService.getProfileById(profileId);
+
+        if (profileOptional.isPresent()) {
+            Profile profile = profileOptional.get();
+            profile.getFavorites().add(contentId);
+            profileService.updateProfile(profileId, profile);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 
