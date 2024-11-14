@@ -49,6 +49,7 @@ public class ListControllerTest {
         mockProfile.setRecentlyWatched(new ArrayList<>(Arrays.asList(301, 302)));
     }
 
+
     // ----------------- Favorites Tests -----------------
 
     @Test
@@ -166,4 +167,61 @@ public class ListControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    // ----------------- Recently Watched Tests -----------------
+
+    @Test
+    public void testGetRecentlyWatched() throws Exception {
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(get("/users/1/profiles/1/lists/recently-watched"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value(301))
+                .andExpect(jsonPath("$[1]").value(302));
+    }
+
+    @Test
+    public void testAddRecentlyWatched() throws Exception {
+        Integer contentIdToAdd = 303;
+        Profile updatedProfile = new Profile();
+        updatedProfile.setId(1);
+        updatedProfile.setName("John's Profile");
+        updatedProfile.setUserId(1);
+        updatedProfile.setFavorites(Arrays.asList(101, 102));
+        updatedProfile.setWatchLater(Arrays.asList(201, 202));
+        updatedProfile.setRecentlyWatched(Arrays.asList(301, 302, 303));
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+        when(profileService.updateProfile(1, mockProfile)).thenReturn(updatedProfile);
+
+        mockMvc.perform(post("/users/1/profiles/1/lists/recently-watched")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(contentIdToAdd)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testRemoveRecentlyWatched() throws Exception {
+        Profile updatedProfile = new Profile();
+        updatedProfile.setId(1);
+        updatedProfile.setName("John's Profile");
+        updatedProfile.setUserId(1);
+        updatedProfile.setFavorites(Arrays.asList(101, 102));
+        updatedProfile.setWatchLater(Arrays.asList(201, 202));
+        updatedProfile.setRecentlyWatched(Collections.singletonList(302));
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+        when(profileService.updateProfile(1, mockProfile)).thenReturn(updatedProfile);
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/recently-watched/301"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testRemoveRecentlyWatchedNotFound() throws Exception {
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/recently-watched/999"))
+                .andExpect(status().isNotFound());
+    }
 }
