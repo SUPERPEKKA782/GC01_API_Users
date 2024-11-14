@@ -72,4 +72,26 @@ public class ListControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    // ----------------- Watch Later Tests -----------------
+
+    @Test
+    public void testAddWatchLater() throws Exception {
+        Integer contentIdToAdd = 203;
+        Profile updatedProfile = new Profile();
+        updatedProfile.setId(1);
+        updatedProfile.setName("John's Profile");
+        updatedProfile.setUserId(1);
+        updatedProfile.setFavorites(Arrays.asList(101, 102));
+        updatedProfile.setWatchLater(Arrays.asList(201, 202, 203));
+        updatedProfile.setRecentlyWatched(Arrays.asList(301, 302));
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+        when(profileService.updateProfile(1, mockProfile)).thenReturn(updatedProfile);
+
+        mockMvc.perform(post("/users/1/profiles/1/lists/watch-later")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(contentIdToAdd)))
+                .andExpect(status().isCreated());
+    }
+
 }
