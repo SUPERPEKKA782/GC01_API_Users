@@ -49,8 +49,18 @@ public class ListControllerTest {
         mockProfile.setRecentlyWatched(new ArrayList<>(Arrays.asList(301, 302)));
     }
 
-
     // ----------------- Favorites Tests -----------------
+
+    @Test
+    public void testGetFavorites() throws Exception {
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(get("/users/1/profiles/1/lists/favorites"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value(101))
+                .andExpect(jsonPath("$[1]").value(102));
+    }
 
     @Test
     public void testAddFavorite() throws Exception {
@@ -72,7 +82,44 @@ public class ListControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    public void testRemoveFavorite() throws Exception {
+        Profile updatedProfile = new Profile();
+        updatedProfile.setId(1);
+        updatedProfile.setName("John's Profile");
+        updatedProfile.setUserId(1);
+        updatedProfile.setFavorites(Collections.singletonList(102));
+        updatedProfile.setWatchLater(Arrays.asList(201, 202));
+        updatedProfile.setRecentlyWatched(Arrays.asList(301, 302));
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+        when(profileService.updateProfile(1, mockProfile)).thenReturn(updatedProfile);
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/favorites/101"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testRemoveFavoriteNotFound() throws Exception {
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/favorites/999"))
+                .andExpect(status().isNotFound());
+    }
+
     // ----------------- Watch Later Tests -----------------
+
+    @Test
+    public void testGetWatchLater() throws Exception {
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(get("/users/1/profiles/1/lists/watch-later"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0]").value(201))
+                .andExpect(jsonPath("$[1]").value(202));
+    }
 
     @Test
     public void testAddWatchLater() throws Exception {
@@ -92,6 +139,31 @@ public class ListControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(contentIdToAdd)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testRemoveWatchLater() throws Exception {
+        Profile updatedProfile = new Profile();
+        updatedProfile.setId(1);
+        updatedProfile.setName("John's Profile");
+        updatedProfile.setUserId(1);
+        updatedProfile.setFavorites(Arrays.asList(101, 102));
+        updatedProfile.setWatchLater(Collections.singletonList(202));
+        updatedProfile.setRecentlyWatched(Arrays.asList(301, 302));
+
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+        when(profileService.updateProfile(1, mockProfile)).thenReturn(updatedProfile);
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/watch-later/201"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testRemoveWatchLaterNotFound() throws Exception {
+        when(profileService.getProfileById(1)).thenReturn(Optional.of(mockProfile));
+
+        mockMvc.perform(delete("/users/1/profiles/1/lists/watch-later/999"))
+                .andExpect(status().isNotFound());
     }
 
 }
