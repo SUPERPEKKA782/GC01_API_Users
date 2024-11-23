@@ -1,0 +1,517 @@
+openapi: 3.0.3
+info:
+  title: User and Profile Management API
+  description: API for managing users, profiles, and individual content lists.
+  version: 1.0.0
+
+servers:
+  - url: https://myapi.com/v1
+
+tags:
+  - name: users
+    description: Operations to manage user accounts
+  - name: profiles
+    description: Operations to manage profiles
+  - name: lists
+    description: Operations to manage content lists
+
+paths:
+  /users:
+    post:
+      tags:
+        - users
+      summary: Create a new user
+      requestBody:
+        description: User data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid request
+
+    get:
+      tags:
+        - users
+      summary: Get all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: Get a specific user by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      tags:
+        - users
+      summary: Update user details
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Updated user data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+        '404':
+          description: User not found
+
+    delete:
+      tags:
+        - users
+      summary: Delete a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
+  /users/{userId}/profiles:
+    post:
+      tags:
+        - profiles
+      summary: Create a new profile for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Profile data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      responses:
+        '201':
+          description: Profile created successfully
+        '400':
+          description: Invalid request
+
+    get:
+      tags:
+        - profiles
+      summary: Get all profiles of a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of profiles for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+
+  /users/{userId}/profiles/{profileId}:
+    get:
+      tags:
+        - profiles
+      summary: Get profile details by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Profile details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '404':
+          description: Profile not found
+
+    put:
+      tags:
+        - profiles
+      summary: Update a profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Updated profile data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      responses:
+        '200':
+          description: Profile updated successfully
+        '404':
+          description: Profile not found
+
+    delete:
+      tags:
+        - profiles
+      summary: Delete a profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Profile deleted successfully
+        '404':
+          description: Profile not found
+
+  /users/{userId}/profiles/{profileId}/lists/favorites:
+    get:
+      tags:
+        - lists
+      summary: Get favorite content list
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Favorite content list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+    post:
+      tags:
+        - lists
+      summary: Add content to favorites
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: ID of the content to be added to favorites
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+      responses:
+        '201':
+          description: Content added to favorites
+        '400':
+          description: Invalid request
+
+  /users/{userId}/profiles/{profileId}/lists/favorites/{contentId}:
+    delete:
+      tags:
+        - lists
+      summary: Remove content from favorites
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Content removed from favorites
+        '404':
+          description: Content not found
+
+  /users/{userId}/profiles/{profileId}/lists/watch-later:
+    get:
+      tags:
+        - lists
+      summary: Get watch later content list
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Watch later content list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+    post:
+      tags:
+        - lists
+      summary: Add content to watch later
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: ID of the content to be added to watch later list
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+      responses:
+        '201':
+          description: Content added to watch later
+        '400':
+          description: Invalid request
+
+  /users/{userId}/profiles/{profileId}/lists/watch-later/{contentId}:
+    delete:
+      tags:
+        - lists
+      summary: Remove content from watch later list
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Content removed from watch later
+        '404':
+          description: Content not found
+
+  /users/{userId}/profiles/{profileId}/lists/recently-watched:
+    get:
+      tags:
+        - lists
+      summary: Get recently watched content list
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recently watched content list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+    post:
+      tags:
+        - lists
+      summary: Add content to recently watched
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: ID of the content to be added to recently watched list
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+      responses:
+        '201':
+          description: Content added to recently watched
+        '400':
+          description: Invalid request
+
+  /users/{userId}/profiles/{profileId}/lists/recently-watched/{contentId}:
+    delete:
+      tags:
+        - lists
+      summary: Remove content from recently watched list
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Content removed from recently watched
+        '404':
+          description: Content not found
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+        username:
+          type: string
+          description: Username of the user
+        email:
+          type: string
+          description: Email of the user
+        contrasena:
+          type: string
+          description: Password of the user
+        rol:
+          type: integer
+          description: Role of the user (1 = Normal user, 2 = Admin)
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the profile
+        name:
+          type: string
+          description: Name of the profile
+        userId:
+          type: integer
+          description: ID of the associated user
+        favorites:
+          type: array
+          items:
+            type: integer
+          description: List of favorite content IDs
+        watchLater:
+          type: array
+          items:
+            type: integer
+          description: List of watch later content IDs
+        recentlyWatched:
+          type: array
+          items:
+            type: integer
+          description: List of recently watched content IDs
