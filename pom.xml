@@ -10,6 +10,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <springdoc-version>1.7.0</springdoc-version>
+        <sonar.organization>superpekka782</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
