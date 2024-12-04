@@ -111,7 +111,7 @@ public class CustomInstantDeserializer<T extends Temporal>
       }
   );
 
-  protected final Function<FromIntegerArguments, T> fromMilliseconds;
+  protected final transient Function<FromIntegerArguments, T> fromMilliseconds;
 
   protected final Function<FromDecimalArguments, T> fromNanoseconds;
 
@@ -199,8 +199,10 @@ public class CustomInstantDeserializer<T extends Temporal>
         }
         return value;
       }
+      default: {
+        throw new IllegalArgumentException("Unexpected token: " + parser.getCurrentTokenId());
+      }
     }
-    throw context.mappingException("Expected type float, integer, or string.");
   }
 
   private ZoneId getZone(DeserializationContext context) {
