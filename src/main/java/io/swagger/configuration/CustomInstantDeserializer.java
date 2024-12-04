@@ -111,7 +111,7 @@ public class CustomInstantDeserializer<T extends Temporal>
       }
   );
 
-  protected final Function<FromIntegerArguments, T> fromMilliseconds;
+  protected final transient Function<FromIntegerArguments, T> fromMilliseconds;
 
   protected final Function<FromDecimalArguments, T> fromNanoseconds;
 
