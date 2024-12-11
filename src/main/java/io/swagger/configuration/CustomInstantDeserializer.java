@@ -113,7 +113,7 @@ public class CustomInstantDeserializer<T extends Temporal>
 
   protected final Function<FromIntegerArguments, T> fromMilliseconds;
 
-  protected final Function<FromDecimalArguments, T> fromNanoseconds;
+  protected final transient Function<FromDecimalArguments, T> fromNanoseconds;
 
   protected final Function<TemporalAccessor, T> parsedToValue;
 
@@ -199,8 +199,9 @@ public class CustomInstantDeserializer<T extends Temporal>
         }
         return value;
       }
+      default:
+        throw context.mappingException("Expected type float, integer, or string.");
     }
-    throw context.mappingException("Expected type float, integer, or string.");
   }
 
   private ZoneId getZone(DeserializationContext context) {
